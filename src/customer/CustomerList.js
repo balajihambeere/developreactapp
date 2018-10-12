@@ -1,14 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './CustomerList.css';
 
-const STYLE = {
-    mTop: {
-        marginTop: '50px'
-    },
-    mLeft: {
-        marginLeft: '10px'
-    },
-};
 const Home = (props) => {
     return (
         <div>
@@ -33,34 +26,15 @@ const Home = (props) => {
                                 <td>{item.lastName}</td>
                                 <td>{item.phone}</td>
                                 <td>{item.email}</td>
+                                <td>
+                                    <Link to={`customer/details/${item._id}`}>View</Link> |
+                                </td>
                             </tr>
                         ))
                     }
-
                 </tbody>
             </table>
         </div>
     )
 };
-
-
-
-// class CustomerListComponent extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = { customers: [] };
-//     }
-//     componentDidMount() {
-//         fetch('http://localhost:3200/customers')
-//             .then(data => data.json())
-//             .then((data) => { this.setState({ customers: data }) });
-//     }
-//     render() {
-//         return (
-//             <div className="navbar">
-//                 getTableContent(this.state.customers)
-//             </div>
-//         );
-//     }
-// }
 export default Home
