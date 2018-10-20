@@ -1,33 +1,30 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getCustomerById } from '../store/customer/action';
+import PropTypes from 'prop-types'
 
 class CustomerDetailComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            customer: null
-        }
-    }
+    
     componentDidMount() {
-        fetch(`http://localhost:3200/customer/${this.props.match.params.id}`)
-            .then(data => data.json())
-            .then((data) => {
-                this.setState({ customer: data })
-            });
+        const { dispatch } = this.props
+        dispatch(getCustomerById(this.props.match.params.id))
     }
+
     nextPath(path) {
         this.props.history.push(path);
     }
     render() {
+        const { customer } = this.props
         return (
             <div>
                 <h2>Customer Details</h2>
                 <hr />
-                {this.state && this.state.customer &&
+                {customer &&
                     <dl>
-                        <dt>First Name : {this.state.customer.firstName}</dt>
-                        <dt>Last Name : {this.state.customer.lastName}</dt>
-                        <dt>PhoneNumber : {this.state.customer.phone}</dt>
-                        <dt>Email Address: {this.state.customer.email}</dt>
+                        <dt>First Name : {customer.firstName}</dt>
+                        <dt>Last Name : {customer.lastName}</dt>
+                        <dt>Phone Number : {customer.phone}</dt>
+                        <dt>Email Address: {customer.email}</dt>
                     </dl>
                 }
                 <input type="button" value="back" onClick={() => this.nextPath('/')} />
@@ -35,4 +32,20 @@ class CustomerDetailComponent extends Component {
         );
     }
 }
-export default CustomerDetailComponent
+
+CustomerDetailComponent.propTypes = {
+    customer: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
+}
+
+const mapStateToProps = (state) => {
+    let customer = {};
+    if (state.customerReducer.customer !== undefined) {
+        customer = state.customerReducer;
+        return customer;
+    } else {
+        return { customer }
+    }
+}
+
+export default connect(mapStateToProps)(CustomerDetailComponent)

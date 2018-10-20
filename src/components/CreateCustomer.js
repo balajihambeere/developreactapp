@@ -73,7 +73,6 @@ class CreateCustomerComponent extends Component {
     }
 }
 
-
 const mapStateToProps = (state) => {
     if (state.customerReducer.isSubmitted !== undefined) {
         return {

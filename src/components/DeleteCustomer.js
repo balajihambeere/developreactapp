@@ -1,34 +1,26 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { getCustomerById, deleteCustomer } from '../store/customer/action';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux';
 
 class DeleteCustomerComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            shouldHide: true,
-            message: '',
-            customer: null,
             redirectToReferrer: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
     componentDidMount() {
-        fetch(`http://localhost:3200/customer/${this.props.match.params.id}`)
-            .then(data => data.json())
-            .then((data) => {
-                this.setState({ customer: data })
-            });
+        const { dispatch } = this.props
+        dispatch(getCustomerById(this.props.match.params.id))
     }
 
     handleSubmit(event) {
-        fetch(`http://localhost:3200/customer/${this.props.match.params.id}`, {
-            method: 'DELETE'
-        }).then(() => {
-            this.setState({ message: "customer delete successfully" });
-            this.setState({ shouldHide: false });
-        }).catch((error) => {
-            console.log(error);
-        });
+        const { dispatch } = this.props
+        dispatch(deleteCustomer(this.props.match.params.id));
         event.preventDefault();
     }
     nextPath(path) {
@@ -38,32 +30,48 @@ class DeleteCustomerComponent extends Component {
         this.setState({ redirectToReferrer: true });
     }
     render() {
-        const redirectToReferrer = this.state.redirectToReferrer;
-        if (redirectToReferrer) {
+        const { customer, redirectTo } = this.props
+        if (redirectTo) {
             return <Redirect push to="/" />
         }
         return (
             <div>
-                <h2 className={this.state.shouldHide ? '' : 'hidden'}>You want to delete this Customer
+                <h2>You want to delete this Customer
                 <form onSubmit={this.handleSubmit} >
                         <input className="buttonWidth" type="button" value="NO" onClick={() => this.nextPath('/')} />
                         <input className="buttonWidth marginLeft10" type="submit" value="YES" />
                     </form>
                 </h2>
-                <h2 className={this.state.shouldHide ? 'hidden' : ''}>{this.state.message}
-                    <input className="buttonWidth marginLeft10" type="button" value="OK" onClick={() => this.ok()} />
-                </h2>
                 <hr />
-                {this.state && this.state.customer &&
-                    <dl className={this.state.shouldHide ? '' : 'hidden'}>
-                        <dt>First Name : {this.state.customer.firstName}</dt>
-                        <dt>Last Name : {this.state.customer.lastName}</dt>
-                        <dt>PhoneNumber : {this.state.customer.phone}</dt>
-                        <dt>Email Address: {this.state.customer.email}</dt>
+                {
+                    customer &&
+                    <dl>
+                        <dt>First Name : {customer.firstName}</dt>
+                        <dt>Last Name : {customer.lastName}</dt>
+                        <dt>Phone Number : {customer.phone}</dt>
+                        <dt>Email Address : {customer.email}</dt>
                     </dl>
                 }
             </div>
         );
     }
 }
-export default DeleteCustomerComponent
+
+DeleteCustomerComponent.propTypes = {
+    customer: PropTypes.object.isRequired,
+    redirectTo: PropTypes.bool,
+    message: PropTypes.string,
+    dispatch: PropTypes.func.isRequired
+}
+
+const mapStateToProps = (state) => {
+    const { customer, redirectTo, message } =
+        state.customerReducer.customer !== undefined ? state.customerReducer : { customer: {}, redirectTo: false, message: "" }
+
+
+    return {
+        customer, redirectTo, message
+    }
+}
+
+export default connect(mapStateToProps)(DeleteCustomerComponent)
