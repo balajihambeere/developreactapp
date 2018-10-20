@@ -1,23 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './CustomerList.css';
-
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { getCustomers } from '../store/customer/action';
 class CustomerList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            customers: []
-        }
-    }
+
     componentDidMount() {
-        fetch('http://localhost:3200/customers')
-            .then(data => data.json())
-            .then((data) => {
-                this.setState({ customers: data })
-            });
+        const { dispatch } = this.props
+        dispatch(getCustomers())
     }
 
     render() {
+        const { customers } = this.props
         return (
             <div>
                 <a href="/customer/add">
@@ -35,7 +30,7 @@ class CustomerList extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.customers.map((item) => (
+                            customers.map((item) => (
                                 <tr key={item._id}>
                                     <td>{item.firstName}</td>
                                     <td>{item.lastName}</td>
@@ -55,4 +50,20 @@ class CustomerList extends Component {
         )
     }
 }
-export default CustomerList
+
+CustomerList.propTypes = {
+    customers: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired
+}
+
+const mapStateToProps = (state) => {
+    let customers = [];
+    if (state.customerReducer.customers !== undefined) {
+        customers = state.customerReducer;
+        return customers;
+    } else {
+        return { customers }
+    }
+}
+
+export default connect(mapStateToProps)(CustomerList)
