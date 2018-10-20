@@ -9,6 +9,9 @@ const customerReducer = (state = {}, action) => {
     case actionTypes.CUSTOMER_FETCH_ONE_SUCCESS:
       return state.setIn(['byId', action.payload.id], action.payload);
     case actionTypes.CUSTOMER_CREATE_SUCCESS:
+      return Object.assign({}, state, {
+        isSubmitted: true
+      });
     case actionTypes.CUSTOMER_UPDATE_SUCCESS:
       return state.setIn(['byId', action.payload.id], action.payload);
     case actionTypes.CUSTOMER_DELETE_SUCCESS:

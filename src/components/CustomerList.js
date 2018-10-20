@@ -4,8 +4,9 @@ import './CustomerList.css';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { getCustomers } from '../store/customer/action';
-class CustomerList extends Component {
 
+class CustomerList extends Component {
+    
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(getCustomers())

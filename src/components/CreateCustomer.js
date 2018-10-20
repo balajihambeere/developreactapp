@@ -1,50 +1,45 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+
+import { createCustomer } from '../store/customer/action';
 
 const inputStyle = {
     mLeft: {
         marginLeft: '10px'
     }
 };
+
 class CreateCustomerComponent extends Component {
     constructor(props) {
         super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
             firstName: '',
             lastName: '',
             phone: '',
-            email: '',
-            isSubmitted: false,
+            email: ''
         }
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(event) {
-        fetch('http://localhost:3200/customer', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                phone: this.state.phone,
-                email: this.state.email
-            })
-        }).then(() => {
-            this.setState({ isSubmitted: true });
-        }).catch((error) => {
-            console.log(error);
-        });
+        const { dispatch } = this.props
+        const customer = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            phone: this.state.phone,
+            email: this.state.email
+        }
+        dispatch(createCustomer(customer));
         event.preventDefault();
     }
+
     nextPath(path) {
         this.props.history.push(path);
     }
 
     render() {
-        const isSubmitted = this.state.isSubmitted;
+        const { isSubmitted } = this.props;
         if (isSubmitted) {
             return <Redirect push to="/" />
         }
@@ -77,4 +72,16 @@ class CreateCustomerComponent extends Component {
         );
     }
 }
-export default CreateCustomerComponent
+
+
+const mapStateToProps = (state) => {
+    if (state.customerReducer.isSubmitted !== undefined) {
+        return {
+            isSubmitted: state.customerReducer
+        }
+    } else {
+        return { isSubmitted: false }
+    }
+}
+
+export default connect(mapStateToProps)(CreateCustomerComponent)
