@@ -13,7 +13,8 @@ const customerReducer = (state = {}, action) => {
       });
     case actionTypes.CUSTOMER_CREATE_SUCCESS:
       return Object.assign({}, state, {
-        isSubmitted: true
+        isSubmitted: true,
+        customer: action.payload,
       });
     case actionTypes.CUSTOMER_UPDATE_SUCCESS:
       return Object.assign({}, state, {
@@ -22,7 +23,7 @@ const customerReducer = (state = {}, action) => {
       });
     case actionTypes.CUSTOMER_DELETE_SUCCESS:
       return Object.assign({}, state, {
-        redirectTo: true,
+        isSubmitted: true,
         message: "Customer record deleted successfully",
         customer: action.payload,
       });

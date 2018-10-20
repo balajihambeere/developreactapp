@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { getCustomers } from '../store/customer/action';
 
-class CustomerList extends Component {
-    
+class CustomerListComponent extends Component {
+       
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(getCustomers())
@@ -52,7 +52,7 @@ class CustomerList extends Component {
     }
 }
 
-CustomerList.propTypes = {
+CustomerListComponent.propTypes = {
     customers: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired
 }
@@ -67,4 +67,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(CustomerList)
+export default connect(mapStateToProps)(CustomerListComponent)

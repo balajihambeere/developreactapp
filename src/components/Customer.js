@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCustomerById, updateCustomer } from '../store/customer/action';
+import { getCustomerById, updateCustomer, createCustomer } from '../store/customer/action';
 import PropTypes from 'prop-types'
 
 
@@ -11,7 +11,7 @@ const inputStyle = {
     }
 };
 
-class EditCustomerComponent extends Component {
+class CustomerComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,18 +24,25 @@ class EditCustomerComponent extends Component {
     }
     componentDidMount() {
         const { dispatch } = this.props
-        dispatch(getCustomerById(this.props.match.params.id))
+        if (this.props.match.params.id) {
+            dispatch(getCustomerById(this.props.match.params.id))
+        }
     }
 
     handleSubmit(event, customer) {
         const { dispatch } = this.props;
-        dispatch(updateCustomer(this.props.match.params.id, customer));
+        if (this.props.match.params.id) {
+            dispatch(updateCustomer(this.props.match.params.id, customer));
+        } else {
+            dispatch(createCustomer(customer));
+        }
         event.preventDefault();
     }
 
     nextPath(path) {
         this.props.history.push(path);
     }
+    
     render() {
         const { customer, isSubmitted } = this.props
         if (isSubmitted) {
@@ -72,7 +79,7 @@ class EditCustomerComponent extends Component {
 }
 
 
-EditCustomerComponent.propTypes = {
+CustomerComponent.propTypes = {
     customer: PropTypes.object.isRequired,
     isSubmitted: PropTypes.bool,
     dispatch: PropTypes.func.isRequired
@@ -85,4 +92,4 @@ const mapStateToProps = (state) => {
     return { customer, isSubmitted }
 }
 
-export default connect(mapStateToProps)(EditCustomerComponent)
+export default connect(mapStateToProps)(CustomerComponent)

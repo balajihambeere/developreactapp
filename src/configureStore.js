@@ -4,6 +4,7 @@ import { createLogger } from 'redux-logger'
 
 import rootReducer from './store/reducers';
 
+//Remove this logger in production
 const loggerMiddleware = createLogger()
 
 export default function configureStore(preloadedState) {
