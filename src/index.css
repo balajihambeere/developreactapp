@@ -4,3 +4,12 @@ body {margin:0;}
     width:20em;
     margin-bottom: 1em;
 }
+
+.buttonWidth {
+  width:50px;
+}
+.hidden { display:none; }
+.marginLeft10
+{
+  margin-left: 10px;
+}
